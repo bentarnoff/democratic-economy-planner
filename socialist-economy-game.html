@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Democratic Economy Planner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+        }
+
+        .section h2 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 8px;
+        }
+
+        .quarter-info {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+            font-size: 1.1em;
+        }
+
+        .points-available {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .allocation-slider {
+            margin-bottom: 20px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .slider-label {
+            color: #495057;
+        }
+
+        .slider-value {
+            color: #e74c3c;
+            font-size: 1.1em;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+        }
+
+        .slider-description {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .indicators {
+            display: grid;
+            gap: 15px;
+        }
+
+        .indicator {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #6c757d;
+        }
+
+        .indicator.good {
+            border-left-color: #28a745;
+        }
+
+        .indicator.medium {
+            border-left-color: #ffc107;
+        }
+
+        .indicator.bad {
+            border-left-color: #dc3545;
+        }
+
+        .indicator-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .indicator-bar {
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .indicator-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745 0%, #ffc107 50%, #dc3545 100%);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .indicator-value {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .proposal {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 2px solid #dee2e6;
+            transition: border-color 0.3s;
+        }
+
+        .proposal:hover {
+            border-color: #e74c3c;
+        }
+
+        .proposal-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #e74c3c;
+            margin-bottom: 8px;
+        }
+
+        .proposal-desc {
+            color: #495057;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .proposal-impacts {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .impact {
+            margin-bottom: 5px;
+        }
+
+        .impact.positive {
+            color: #28a745;
+        }
+
+        .impact.negative {
+            color: #dc3545;
+        }
+
+        .proposal-cost {
+            font-weight: 600;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .proposal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .proposal-feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .proposal-feedback.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .proposal-feedback.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .proposal-feedback.rejected {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1em;
+        }
+
+        .btn-approve {
+            background: #28a745;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-approve:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-reject {
+            background: #dc3545;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-reject:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-primary {
+            background: #e74c3c;
+            color: white;
+            width: 100%;
+            font-size: 1.2em;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-primary:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .events-log {
+            grid-column: 1 / -1;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .event {
+            padding: 12px;
+            border-left: 4px solid #6c757d;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .event.positive {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+
+        .event.negative {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .event.neutral {
+            border-left-color: #17a2b8;
+            background: #d1ecf1;
+        }
+
+        .event-quarter {
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .allocation-total {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 1.1em;
+            border: 2px solid #dee2e6;
+        }
+
+        .allocation-total.valid {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .allocation-total.invalid {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+
+        .help-text {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 4px solid #0066cc;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border: 2px solid #dee2e6;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚩 Democratic Economy Planner</h1>
+            <p class="subtitle">A Multi-Criterial Socialist Economy Simulator</p>
+            <p class="subtitle" style="font-size: 0.9em; margin-top: 10px;">Inspired by Aaron Benanav's "Beyond Capitalism"</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Instructions -->
+            <div class="section full-width">
+                <h2>How to Play</h2>
+                <div class="help-text">
+                    You are the coordinator of a democratic socialist economy. Unlike capitalism's single-minded pursuit of profit,
+                    your goal is to balance <strong>multiple social goals</strong>: worker wellbeing, ecological sustainability,
+                    innovation, equality, and community satisfaction. Each quarter, you'll allocate <strong>points</strong> (production currency)
+                    across five economic domains and vote on investment proposals from workers and communities. Watch how your
+                    decisions affect all indicators - there's no single "optimal" path, only trade-offs to navigate democratically.
+                </div>
+            </div>
+
+            <!-- Current Quarter Info -->
+            <div class="section">
+                <h2>Current Quarter</h2>
+                <div class="quarter-info">
+                    <div>Quarter: <strong id="current-quarter">1</strong></div>
+                    <div class="points-available">Available Points: <span id="available-points">1000</span></div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-quarters">1</div>
+                        <div class="stat-label">Quarters Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="proposals-approved">0</div>
+                        <div class="stat-label">Proposals Approved</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multi-Criterial Indicators -->
+            <div class="section">
+                <h2>Multi-Criterial Indicators</h2>
+                <p style="margin-bottom: 15px; color: #6c757d; font-size: 0.95em;">
+                    These cannot be reduced to a single metric. Balance them according to democratic values.
+                </p>
+                <div class="indicators" id="indicators">
+                    <!-- Indicators will be populated by JS -->
+                </div>
+            </div>
+
+            <!-- Points Allocation -->
+            <div class="section full-width">
+                <h2>Allocate Points Across Economic Domains</h2>
+                <p style="margin-bottom: 15px; color: #6c757d;">
+                    Distribute your quarterly points budget. The Demos (people) will debate these ratios democratically.
+                </p>
+
+                <div class="allocation-slider">
+                    <div class="slider-header">
+                        <span class="slider-label">🏥 Public Universal Provision</span>
+                        <span class="slider-value"><span id="public-value">25</span>%</span>
+                    </div>
+                    <input type="range" id="public-slider" min="0" max="100" value="25">
+                    <div class="slider-description">Healthcare, housing, education, transport, care services</div>
+                </div>
+
+                <div class="allocation-slider">
+                    <div class="slider-header">
+                        <span class="slider-label">🛍️ Individual Consumption Goods</span>
+                        <span class="slider-value"><span id="consumption-value">25</span>%</span>
+                    </div>
+                    <input type="range" id="consumption-slider" min="0" max="100" value="25">
+                    <div class="slider-description">Restaurants, clothing, furniture, entertainment, personal choice items</div>
+                </div>
+
+                <div class="allocation-slider">
+                    <div class="slider-header">
+                        <span class="slider-label">🤝 Associative Domain</span>
+                        <span class="slider-value"><span id="associative-value">20</span>%</span>
+                    </div>
+                    <input type="range" id="associative-slider" min="0" max="100" value="20">
+                    <div class="slider-description">Technical Associations, Free Associations, civic & cultural life</div>
+                </div>
+
+                <div class="allocation-slider">
+                    <div class="slider-header">
+                        <span class="slider-label">⚙️ Administration & Coordination</span>
+                        <span class="slider-value"><span id="admin-value">15</span>%</span>
+                    </div>
+                    <input type="range" id="admin-slider" min="0" max="100" value="15">
+                    <div class="slider-description">Investment Boards, Evaluation Bodies, Data Matrix infrastructure</div>
+                </div>
+
+                <div class="allocation-slider">
+                    <div class="slider-header">
+                        <span class="slider-label">🚀 Future Investment & Development</span>
+                        <span class="slider-value"><span id="investment-value">15</span>%</span>
+                    </div>
+                    <input type="range" id="investment-slider" min="0" max="100" value="15">
+                    <div class="slider-description">R&D, infrastructure, technological development, transformational projects</div>
+                </div>
+
+                <div class="allocation-total" id="allocation-total">
+                    Total Allocation: <strong id="total-percentage">100</strong>%
+                    <span id="allocation-message"></span>
+                </div>
+            </div>
+
+            <!-- Investment Proposals -->
+            <div class="section full-width">
+                <h2>Investment Proposals from Democratic Boards</h2>
+                <p style="margin-bottom: 15px; color: #6c757d;">
+                    Workers, communities, and Technical Associations submit proposals. Vote based on multiple criteria, not just efficiency.
+                </p>
+                <div id="proposals">
+                    <!-- Proposals will be populated by JS -->
+                </div>
+            </div>
+
+            <!-- Events Log -->
+            <div class="section events-log full-width">
+                <h2>Events & Outcomes Log</h2>
+                <div id="events-log">
+                    <div class="event neutral">
+                        <div class="event-quarter">Quarter 1</div>
+                        <div>Welcome to the Democratic Economy! You've inherited a system in crisis - ecological damage from capitalism, weakened communities, growing inequality. Your challenge: balance competing values democratically while fighting natural entropy. All indicators decay each quarter without active investment. Choose wisely - cascading failures are real.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advance Quarter Button -->
+            <div class="full-width">
+                <button class="btn-primary" id="advance-button" onclick="advanceQuarter()">
+                    Finalize Allocation & Advance to Next Quarter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            quarter: 1,
+            availablePoints: 1000,
+            totalQuarters: 0,
+            proposalsApproved: 0,
+            indicators: {
+                workerWellbeing: 45,
+                ecological: 40,  // Start with ecological crisis
+                innovation: 48,
+                equality: 42,
+                community: 46
+            },
+            allocations: {
+                public: 25,
+                consumption: 25,
+                associative: 20,
+                admin: 15,
+                investment: 15
+            },
+            currentProposals: [],
+            events: []
+        };
+
+        // Proposal Templates
+        const proposalTemplates = [
+            {
+                title: "Reduce Working Week to 30 Hours",
+                description: "Technical Association of Industrial Workers proposes reducing the standard work week from 35 to 30 hours without pay reduction, funded by automation gains.",
+                impacts: [
+                    { text: "Worker Wellbeing +18", positive: true },
+                    { text: "Community Satisfaction +12", positive: true },
+                    { text: "Innovation -8 (less productive time)", positive: false },
+                    { text: "Equality +8", positive: true }
+                ],
+                cost: 250,
+                effects: { workerWellbeing: 18, ecological: 0, innovation: -8, equality: 8, community: 12 }
+            },
+            {
+                title: "Expand Renewable Energy Infrastructure",
+                description: "Investment Board proposes massive solar & wind farm construction to fully decarbonize electricity production within 5 years.",
+                impacts: [
+                    { text: "Ecological Sustainability +20", positive: true },
+                    { text: "Innovation +10", positive: true },
+                    { text: "Consumption Goods -5 (resource reallocation)", positive: false }
+                ],
+                cost: 250,
+                effects: { workerWellbeing: 0, ecological: 20, innovation: 10, equality: 0, community: 5 }
+            },
+            {
+                title: "Universal Childcare & Eldercare Expansion",
+                description: "Community groups demand doubling of care facilities and worker recruitment to eliminate all wait times.",
+                impacts: [
+                    { text: "Equality +15 (especially gender)", positive: true },
+                    { text: "Community Satisfaction +15", positive: true },
+                    { text: "Worker Wellbeing +5", positive: true }
+                ],
+                cost: 180,
+                effects: { workerWellbeing: 5, ecological: 0, innovation: 0, equality: 15, community: 15 }
+            },
+            {
+                title: "Automate Repetitive Manufacturing Tasks",
+                description: "Workers' cooperative proposes robotics upgrade to eliminate monotonous assembly line work, with freed workers moving to creative roles.",
+                impacts: [
+                    { text: "Innovation +15", positive: true },
+                    { text: "Worker Wellbeing +10 (better jobs)", positive: true },
+                    { text: "Equality -5 (transition challenges)", positive: false }
+                ],
+                cost: 150,
+                effects: { workerWellbeing: 10, ecological: -5, innovation: 15, equality: -5, community: 0 }
+            },
+            {
+                title: "Public Housing Beautification Program",
+                description: "Residents request green roofs, art installations, community gardens, and soundproofing for all public housing blocks.",
+                impacts: [
+                    { text: "Community Satisfaction +20", positive: true },
+                    { text: "Ecological +5 (green roofs)", positive: true },
+                    { text: "Equality +10", positive: true }
+                ],
+                cost: 160,
+                effects: { workerWellbeing: 5, ecological: 5, innovation: 0, equality: 10, community: 20 }
+            },
+            {
+                title: "Neighborhood-Scale Food Production",
+                description: "Free Association proposes converting vacant lots and rooftops into community farms, reducing food transport needs.",
+                impacts: [
+                    { text: "Ecological +15 (local food)", positive: true },
+                    { text: "Community Satisfaction +10", positive: true },
+                    { text: "Innovation -5", positive: false }
+                ],
+                cost: 120,
+                effects: { workerWellbeing: 0, ecological: 15, innovation: -5, equality: 5, community: 10 }
+            },
+            {
+                title: "Open-Source Technology Research Hub",
+                description: "Technical Association proposes creating collaborative R&D centers for developing non-proprietary technologies freely shared globally.",
+                impacts: [
+                    { text: "Innovation +20", positive: true },
+                    { text: "Equality +10 (knowledge commons)", positive: true },
+                    { text: "Worker Wellbeing +5", positive: true }
+                ],
+                cost: 200,
+                effects: { workerWellbeing: 5, ecological: 0, innovation: 20, equality: 10, community: 5 }
+            },
+            {
+                title: "Regenerative Agriculture Transition",
+                description: "Farming cooperatives request support to transition from industrial to regenerative/permaculture methods over 3 years.",
+                impacts: [
+                    { text: "Ecological +25 (soil health, biodiversity)", positive: true },
+                    { text: "Worker Wellbeing +10 (better work)", positive: true },
+                    { text: "Innovation -10 (productivity drop initially)", positive: false }
+                ],
+                cost: 220,
+                effects: { workerWellbeing: 10, ecological: 25, innovation: -10, equality: 0, community: 5 }
+            },
+            {
+                title: "Repair & Maintenance Culture Initiative",
+                description: "Consumer groups demand 'right to repair' infrastructure: free tool libraries, repair cafes, and modular product design standards.",
+                impacts: [
+                    { text: "Ecological +15 (less waste)", positive: true },
+                    { text: "Community Satisfaction +15", positive: true },
+                    { text: "Innovation +5", positive: true }
+                ],
+                cost: 140,
+                effects: { workerWellbeing: 0, ecological: 15, innovation: 5, equality: 5, community: 15 }
+            },
+            {
+                title: "Democratic Workplace Redesign Program",
+                description: "Workers request consultants to help redesign workplaces for autonomy, collaboration, and skill development rather than efficiency.",
+                impacts: [
+                    { text: "Worker Wellbeing +20", positive: true },
+                    { text: "Innovation +10 (empowered workers)", positive: true },
+                    { text: "Ecological -5", positive: false }
+                ],
+                cost: 170,
+                effects: { workerWellbeing: 20, ecological: -5, innovation: 10, equality: 5, community: 5 }
+            },
+            {
+                title: "Emergency Climate Mobilization",
+                description: "Climate activists demand immediate reallocation: halt all non-essential production, redirect everything to decarbonization. Extreme but necessary?",
+                impacts: [
+                    { text: "Ecological +35 (massive impact)", positive: true },
+                    { text: "Worker Wellbeing -15 (disruption)", positive: false },
+                    { text: "Community -10 (shortages)", positive: false },
+                    { text: "Innovation -12 (single focus)", positive: false }
+                ],
+                cost: 300,
+                effects: { workerWellbeing: -15, ecological: 35, innovation: -12, equality: 5, community: -10 }
+            },
+            {
+                title: "Luxury Goods Abolition",
+                description: "Egalitarian council proposes banning production of luxury items, redirecting resources to universal provision. True equality or asceticism?",
+                impacts: [
+                    { text: "Equality +25 (radical leveling)", positive: true },
+                    { text: "Community +10", positive: true },
+                    { text: "Worker Wellbeing -15 (less choice)", positive: false },
+                    { text: "Innovation -10 (less diversity)", positive: false }
+                ],
+                cost: 150,
+                effects: { workerWellbeing: -15, ecological: 5, innovation: -10, equality: 25, community: 10 }
+            },
+            {
+                title: "Experimental Income Expansion",
+                description: "Consumer groups demand doubling individual credit allowances. More freedom or unsustainable consumerism?",
+                impacts: [
+                    { text: "Worker Wellbeing +20 (more purchasing power)", positive: true },
+                    { text: "Ecological -20 (more consumption)", positive: false },
+                    { text: "Equality -12 (individualism)", positive: false },
+                    { text: "Community -8", positive: false }
+                ],
+                cost: 200,
+                effects: { workerWellbeing: 20, ecological: -20, innovation: 5, equality: -12, community: -8 }
+            },
+            {
+                title: "Degrowth Transition Plan",
+                description: "Ecological communes propose planned reduction in total production by 30%, focusing on quality of life over quantity. Radical sustainability.",
+                impacts: [
+                    { text: "Ecological +30 (huge sustainability gains)", positive: true },
+                    { text: "Community +15 (slower pace)", positive: true },
+                    { text: "Worker Wellbeing -18 (adjustment pains)", positive: false },
+                    { text: "Innovation -15 (less resources)", positive: false }
+                ],
+                cost: 280,
+                effects: { workerWellbeing: -18, ecological: 30, innovation: -15, equality: 10, community: 15 }
+            },
+            {
+                title: "AI-Assisted Central Coordination",
+                description: "Technocratic faction wants Data Matrix AI to make allocation decisions, claiming superior optimization. Democracy or algorithm?",
+                impacts: [
+                    { text: "Innovation +15 (advanced tech)", positive: true },
+                    { text: "Ecological +12 (optimization)", positive: true },
+                    { text: "Community -25 (loss of participation)", positive: false },
+                    { text: "Equality -15 (technocracy)", positive: false }
+                ],
+                cost: 220,
+                effects: { workerWellbeing: -5, ecological: 12, innovation: 15, equality: -15, community: -25 }
+            }
+        ];
+
+        // Initialize indicators display
+        function updateIndicators() {
+            const container = document.getElementById('indicators');
+            container.innerHTML = '';
+
+            const indicatorNames = {
+                workerWellbeing: 'Worker Wellbeing',
+                ecological: 'Ecological Sustainability',
+                innovation: 'Innovation & Development',
+                equality: 'Social Equality',
+                community: 'Community Satisfaction'
+            };
+
+            for (let [key, name] of Object.entries(indicatorNames)) {
+                let value = Math.max(0, Math.min(100, gameState.indicators[key]));
+                let className = 'indicator';
+                if (value >= 60) className += ' good';
+                else if (value >= 40) className += ' medium';
+                else className += ' bad';
+
+                container.innerHTML += `
+                    <div class="${className}">
+                        <div class="indicator-name">${name}</div>
+                        <div class="indicator-bar">
+                            <div class="indicator-fill" style="width: ${value}%"></div>
+                            <div class="indicator-value">${Math.round(value)}</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Update allocation sliders
+        function updateAllocations() {
+            const sliders = ['public', 'consumption', 'associative', 'admin', 'investment'];
+
+            sliders.forEach(slider => {
+                const element = document.getElementById(`${slider}-slider`);
+                const valueElement = document.getElementById(`${slider}-value`);
+
+                element.addEventListener('input', (e) => {
+                    gameState.allocations[slider] = parseInt(e.target.value);
+                    valueElement.textContent = e.target.value;
+                    checkAllocationTotal();
+                });
+            });
+
+            checkAllocationTotal();
+        }
+
+        function checkAllocationTotal() {
+            const total = Object.values(gameState.allocations).reduce((a, b) => a + b, 0);
+            const totalElement = document.getElementById('total-percentage');
+            const messageElement = document.getElementById('allocation-message');
+            const totalContainer = document.getElementById('allocation-total');
+            const advanceButton = document.getElementById('advance-button');
+
+            totalElement.textContent = total;
+
+            if (total === 100) {
+                totalContainer.className = 'allocation-total valid';
+                messageElement.textContent = ' ✓ Valid allocation';
+                messageElement.style.color = '#28a745';
+                advanceButton.disabled = false;
+            } else {
+                totalContainer.className = 'allocation-total invalid';
+                messageElement.textContent = ` ✗ Must total 100% (currently ${total}%)`;
+                messageElement.style.color = '#dc3545';
+                advanceButton.disabled = true;
+            }
+        }
+
+        // Generate proposals
+        function generateProposals() {
+            const container = document.getElementById('proposals');
+            container.innerHTML = '';
+
+            // Randomly select 3 proposals
+            const shuffled = [...proposalTemplates].sort(() => 0.5 - Math.random());
+            gameState.currentProposals = shuffled.slice(0, 3);
+
+            gameState.currentProposals.forEach((proposal, index) => {
+                const impactsHTML = proposal.impacts.map(impact =>
+                    `<div class="impact ${impact.positive ? 'positive' : 'negative'}">
+                        ${impact.positive ? '↑' : '↓'} ${impact.text}
+                    </div>`
+                ).join('');
+
+                container.innerHTML += `
+                    <div class="proposal" id="proposal-${index}">
+                        <div class="proposal-title">${proposal.title}</div>
+                        <div class="proposal-desc">${proposal.description}</div>
+                        <div class="proposal-impacts">
+                            <strong>Multi-Criterial Impacts:</strong>
+                            ${impactsHTML}
+                        </div>
+                        <div class="proposal-cost">Cost: ${proposal.cost} investment points</div>
+                        <div class="proposal-buttons">
+                            <button class="btn-approve" onclick="voteProposal(${index}, true)">✓ Approve</button>
+                            <button class="btn-reject" onclick="voteProposal(${index}, false)">✗ Reject</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Vote on proposal
+        function voteProposal(index, approve) {
+            const proposal = gameState.currentProposals[index];
+            const proposalElement = document.getElementById(`proposal-${index}`);
+
+            // Remove any existing feedback
+            const existingFeedback = proposalElement.querySelector('.proposal-feedback');
+            if (existingFeedback) {
+                existingFeedback.remove();
+            }
+
+            if (approve) {
+                // Check if enough investment points
+                const investmentPoints = (gameState.availablePoints * gameState.allocations.investment / 100);
+
+                if (investmentPoints >= proposal.cost) {
+                    // Apply effects
+                    for (let [key, value] of Object.entries(proposal.effects)) {
+                        gameState.indicators[key] = Math.max(0, Math.min(100, gameState.indicators[key] + value));
+                    }
+
+                    gameState.proposalsApproved++;
+                    updateIndicators();
+
+                    // Add success feedback to proposal
+                    const feedback = document.createElement('div');
+                    feedback.className = 'proposal-feedback success';
+                    feedback.innerHTML = `✓ APPROVED - ${proposal.cost} investment points allocated. Impacts applied to indicators.`;
+                    proposalElement.appendChild(feedback);
+
+                    addEvent(`Approved: ${proposal.title}`, 'positive');
+                    proposalElement.style.opacity = '0.5';
+                    proposalElement.querySelector('.proposal-buttons').style.display = 'none';
+                } else {
+                    // Add error feedback to proposal
+                    const feedback = document.createElement('div');
+                    feedback.className = 'proposal-feedback error';
+                    const available = Math.floor(investmentPoints);
+                    const needed = proposal.cost;
+                    feedback.innerHTML = `✗ INSUFFICIENT INVESTMENT POINTS<br>
+                        Available: ${available} points (${gameState.allocations.investment}% of ${gameState.availablePoints})<br>
+                        Required: ${needed} points<br>
+                        Increase Investment allocation to ${Math.ceil((needed / gameState.availablePoints) * 100)}%+ or reject other proposals first.`;
+                    proposalElement.appendChild(feedback);
+
+                    addEvent(`Insufficient investment points for: ${proposal.title}. Need ${needed}, have ${available}.`, 'negative');
+
+                    // Re-enable buttons so they can try again
+                    return;
+                }
+            } else {
+                // Add rejection feedback
+                const feedback = document.createElement('div');
+                feedback.className = 'proposal-feedback rejected';
+                feedback.innerHTML = `✗ REJECTED - Proposal declined by democratic vote.`;
+                proposalElement.appendChild(feedback);
+
+                addEvent(`Rejected: ${proposal.title}`, 'neutral');
+                proposalElement.style.opacity = '0.5';
+                proposalElement.querySelector('.proposal-buttons').style.display = 'none';
+            }
+
+            // Disable buttons
+            proposalElement.querySelectorAll('button').forEach(btn => btn.disabled = true);
+        }
+
+        // Add event to log
+        function addEvent(text, type = 'neutral') {
+            const log = document.getElementById('events-log');
+            const event = document.createElement('div');
+            event.className = `event ${type}`;
+            event.innerHTML = `
+                <div class="event-quarter">Quarter ${gameState.quarter}</div>
+                <div>${text}</div>
+            `;
+            log.insertBefore(event, log.firstChild);
+        }
+
+        // Natural decay - infrastructure degrades, people get complacent, systems need maintenance
+        function applyNaturalDecay() {
+            const decay = {
+                workerWellbeing: -2,    // Work conditions degrade without investment
+                ecological: -3,         // Environment degrades fastest without action
+                innovation: -2,         // Innovation slows without R&D
+                equality: -1,           // Inequality creeps back in
+                community: -2           // Community bonds weaken without support
+            };
+
+            for (let [key, value] of Object.entries(decay)) {
+                gameState.indicators[key] = Math.max(0, gameState.indicators[key] + value);
+            }
+
+            if (gameState.quarter % 4 === 0) {
+                addEvent("Natural entropy: Infrastructure ages, systems require renewal. Continuous investment needed to maintain quality.", "neutral");
+            }
+        }
+
+        // Cascading failures - when one indicator gets too low, it drags others down
+        function checkCascadingFailures() {
+            const indicators = gameState.indicators;
+
+            // Ecological collapse affects everything
+            if (indicators.ecological < 25) {
+                indicators.workerWellbeing -= 3;
+                indicators.community -= 3;
+                addEvent("CRISIS: Ecological degradation causing health problems and community displacement!", "negative");
+            }
+
+            // Worker burnout reduces innovation and community
+            if (indicators.workerWellbeing < 25) {
+                indicators.innovation -= 3;
+                indicators.community -= 2;
+                addEvent("CRISIS: Burned-out workers lack energy for civic participation and creative work.", "negative");
+            }
+
+            // Low innovation means falling behind on solving problems
+            if (indicators.innovation < 25) {
+                indicators.ecological -= 2;
+                indicators.workerWellbeing -= 2;
+                addEvent("WARNING: Stagnant innovation preventing solutions to ecological and workplace challenges.", "negative");
+            }
+
+            // Inequality breeds resentment and conflict
+            if (indicators.equality < 25) {
+                indicators.community -= 4;
+                indicators.workerWellbeing -= 2;
+                addEvent("CRISIS: Growing inequality creating social division and conflict in communities.", "negative");
+            }
+
+            // Fractured communities can't organize effectively
+            if (indicators.community < 25) {
+                indicators.equality -= 2;
+                indicators.innovation -= 2;
+                addEvent("WARNING: Weak community bonds undermining collective action and shared innovation.", "negative");
+            }
+        }
+
+        // Crisis events that demand responses
+        function generateCrisisEvents() {
+            if (gameState.quarter < 3) return; // No crises in early game
+
+            const crises = [
+                {
+                    condition: () => gameState.allocations.public < 20 && Math.random() > 0.7,
+                    text: "CRISIS: Public housing shortage causing homelessness crisis. Demos demands 30%+ allocation to public provision!",
+                    effects: { community: -8, equality: -8, workerWellbeing: -5 },
+                    type: "negative"
+                },
+                {
+                    condition: () => gameState.indicators.ecological < 35 && gameState.quarter > 5 && Math.random() > 0.6,
+                    text: "EMERGENCY: Data Matrix shows approaching ecological tipping point. Immediate decarbonization required!",
+                    effects: { ecological: -10, workerWellbeing: -5, community: -5 },
+                    type: "negative"
+                },
+                {
+                    condition: () => gameState.allocations.consumption > 40 && Math.random() > 0.7,
+                    text: "BACKLASH: Over-emphasis on consumption criticized as 'consumerist deviation'. Workers demand more public goods!",
+                    effects: { community: -6, equality: -4 },
+                    type: "negative"
+                },
+                {
+                    condition: () => gameState.allocations.investment < 10 && Math.random() > 0.6,
+                    text: "WARNING: Under-investment in future causing technological stagnation. Technical Associations sound alarm!",
+                    effects: { innovation: -8, ecological: -4 },
+                    type: "negative"
+                },
+                {
+                    condition: () => gameState.allocations.admin > 25 && Math.random() > 0.7,
+                    text: "PROTEST: Workers accuse bureaucracy of bloat. 'Too many coordinators, not enough production!' Strikes threatened.",
+                    effects: { workerWellbeing: -7, community: -5 },
+                    type: "negative"
+                },
+                {
+                    condition: () => gameState.allocations.associative < 15 && Math.random() > 0.6,
+                    text: "CRISIS: Underfunded Free Associations losing capacity. Cultural life withering, civic participation plummeting.",
+                    effects: { community: -10, innovation: -5 },
+                    type: "negative"
+                }
+            ];
+
+            crises.forEach(crisis => {
+                if (crisis.condition()) {
+                    addEvent(crisis.text, crisis.type);
+                    for (let [key, value] of Object.entries(crisis.effects)) {
+                        gameState.indicators[key] = Math.max(0, gameState.indicators[key] + value);
+                    }
+                }
+            });
+        }
+
+        // Check for game over conditions
+        function checkGameOver() {
+            const failedIndicators = Object.entries(gameState.indicators)
+                .filter(([key, value]) => value < 15)
+                .map(([key]) => key);
+
+            if (failedIndicators.length >= 3) {
+                addEvent("SYSTEM COLLAPSE: Multiple critical indicators have failed. The democratic economy is in crisis. The Demos calls for emergency restructuring!", "negative");
+                addEvent("GAME OVER: Your coordination has led to systemic failure. The people demand new leadership.", "negative");
+                document.getElementById('advance-button').disabled = true;
+                document.getElementById('advance-button').textContent = "GAME OVER - Reload to Try Again";
+                document.getElementById('advance-button').style.background = "#6c757d";
+            } else if (failedIndicators.length >= 2) {
+                addEvent("SEVERE WARNING: Multiple indicators in critical condition! The democratic process is under strain.", "negative");
+            }
+
+            // Check if all indicators are healthy (win condition)
+            const allHealthy = Object.values(gameState.indicators).every(val => val >= 60);
+            if (allHealthy && gameState.quarter >= 10) {
+                addEvent("ACHIEVEMENT: Sustained multi-criterial flourishing! All indicators healthy for 10+ quarters. You've built a thriving democratic economy!", "positive");
+            }
+        }
+
+        // Advance to next quarter
+        function advanceQuarter() {
+            // Apply natural decay - things get worse without active investment
+            applyNaturalDecay();
+
+            // Apply allocation effects
+            const effects = calculateAllocationEffects();
+
+            for (let [key, value] of Object.entries(effects)) {
+                gameState.indicators[key] = Math.max(0, Math.min(100, gameState.indicators[key] + value));
+            }
+
+            // Check for cascading failures
+            checkCascadingFailures();
+
+            // Random events based on allocations
+            generateRandomEvents();
+
+            // Crisis events
+            generateCrisisEvents();
+
+            // Increment quarter
+            gameState.quarter++;
+            gameState.totalQuarters++;
+            gameState.availablePoints = Math.floor(1000 + (gameState.quarter * 30)); // Slower growth
+
+            // Update UI
+            document.getElementById('current-quarter').textContent = gameState.quarter;
+            document.getElementById('available-points').textContent = gameState.availablePoints;
+            document.getElementById('total-quarters').textContent = gameState.totalQuarters;
+            document.getElementById('proposals-approved').textContent = gameState.proposalsApproved;
+
+            updateIndicators();
+            generateProposals();
+
+            addEvent(`Quarter ${gameState.quarter} begins. Available points: ${gameState.availablePoints}.`, 'neutral');
+
+            // Check for game over
+            checkGameOver();
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Calculate effects of allocations
+        function calculateAllocationEffects() {
+            const effects = {
+                workerWellbeing: 0,
+                ecological: 0,
+                innovation: 0,
+                equality: 0,
+                community: 0
+            };
+
+            // Public provision helps equality, community, wellbeing
+            if (gameState.allocations.public > 35) {
+                effects.equality += 5;
+                effects.community += 4;
+                effects.workerWellbeing += 3;
+            } else if (gameState.allocations.public > 25) {
+                effects.equality += 2;
+                effects.community += 2;
+                effects.workerWellbeing += 1;
+            } else if (gameState.allocations.public < 20) {
+                effects.equality -= 5;
+                effects.community -= 4;
+                effects.workerWellbeing -= 3;
+            }
+
+            // Consumption goods help wellbeing but can hurt ecology
+            if (gameState.allocations.consumption > 40) {
+                effects.workerWellbeing += 3;
+                effects.ecological -= 6;
+                effects.equality -= 3; // Consumerism undermines solidarity
+            } else if (gameState.allocations.consumption > 30) {
+                effects.workerWellbeing += 1;
+                effects.ecological -= 2;
+            } else if (gameState.allocations.consumption < 15) {
+                effects.workerWellbeing -= 4;
+                effects.community -= 2;
+            }
+
+            // Associative domain helps community, equality, innovation
+            if (gameState.allocations.associative > 25) {
+                effects.community += 5;
+                effects.innovation += 3;
+                effects.equality += 3;
+            } else if (gameState.allocations.associative > 18) {
+                effects.community += 2;
+                effects.innovation += 1;
+                effects.equality += 1;
+            } else if (gameState.allocations.associative < 15) {
+                effects.community -= 4;
+                effects.innovation -= 3;
+                effects.equality -= 2;
+            }
+
+            // Investment helps innovation, ecology
+            if (gameState.allocations.investment > 25) {
+                effects.innovation += 5;
+                effects.ecological += 4;
+            } else if (gameState.allocations.investment > 18) {
+                effects.innovation += 2;
+                effects.ecological += 2;
+            } else if (gameState.allocations.investment < 12) {
+                effects.innovation -= 4;
+                effects.ecological -= 3;
+            }
+
+            // Admin - too much or too little causes problems
+            if (gameState.allocations.admin > 25) {
+                effects.workerWellbeing -= 4;
+                effects.community -= 3;
+                effects.innovation -= 2; // Bureaucracy stifles creativity
+            } else if (gameState.allocations.admin > 18) {
+                effects.workerWellbeing -= 1;
+            } else if (gameState.allocations.admin < 10) {
+                effects.equality -= 4; // Can't coordinate fairly
+                effects.innovation -= 3; // Can't organize R&D
+                effects.community -= 2; // Chaos
+            }
+
+            return effects;
+        }
+
+        // Generate random events
+        function generateRandomEvents() {
+            const events = [
+                { condition: () => gameState.indicators.ecological > 70, text: "Data Matrix reports: Carbon emissions down 15% this quarter! Communities celebrate.", type: "positive" },
+                { condition: () => gameState.indicators.ecological < 30, text: "Warning: Ecological indicators critical. Communities demand urgent action on sustainability.", type: "negative" },
+                { condition: () => gameState.indicators.workerWellbeing > 70, text: "Worker survey shows record satisfaction! Absenteeism down, creativity up.", type: "positive" },
+                { condition: () => gameState.indicators.workerWellbeing < 30, text: "Workers report burnout and stress. Technical Associations call emergency meetings.", type: "negative" },
+                { condition: () => gameState.indicators.innovation > 70, text: "Innovation boom! New open-source technologies spreading across sectors.", type: "positive" },
+                { condition: () => gameState.indicators.community > 70, text: "Free Associations report thriving civic life. Neighborhood festivals at all-time high.", type: "positive" },
+                { condition: () => gameState.indicators.equality > 70, text: "Evaluation Bodies report: Income inequality at historic lows. Universal access improving.", type: "positive" },
+                { condition: () => gameState.indicators.equality < 30, text: "Communities report unequal access to resources. Demos debates allocation priorities.", type: "negative" },
+            ];
+
+            events.forEach(event => {
+                if (event.condition() && Math.random() > 0.6) {
+                    addEvent(event.text, event.type);
+                }
+            });
+        }
+
+        // Initialize game
+        function initGame() {
+            updateIndicators();
+            updateAllocations();
+            generateProposals();
+        }
+
+        // Start game when page loads
+        window.onload = initGame;
+    </script>
+</body>
+</html>
